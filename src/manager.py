@@ -113,3 +113,34 @@ class Manager:
             raise ValueError("Apartment key does not exist")
         return any([bill for bill in self.bills if bill.apartment == apartment_key and bill.settlement_year == year and bill.settlement_month == month])
     
+    def get_transfers_with_unknown_tenant(self):
+        invalid_transfers = []
+        valid_identifiers = set(self.tenants.keys())
+        for tenant in self.tenants.values():
+            valid_identifiers.add(tenant.name)
+
+        for transfer in self.transfers:
+            if transfer.tenant not in valid_identifiers:
+                invalid_transfers.append(transfer)
+                
+        return invalid_transfers if len(invalid_transfers) > 0 else None
+    
+    def get_transfers_outside_agreement(self):
+        invalid_transfers = []
+        
+        for transfer in self.transfers:
+            if getattr(transfer, 'type', None) != 'rent':
+                continue
+
+            tenant_obj = self.tenants.get(transfer.tenant)
+            if not tenant_obj:
+                for t in self.tenants.values():
+                    if t.name == transfer.tenant:
+                        tenant_obj = t
+                        break
+
+            if tenant_obj and tenant_obj.date_agreement_from and tenant_obj.date_agreement_to:
+                if transfer.date < tenant_obj.date_agreement_from or transfer.date > tenant_obj.date_agreement_to:
+                    invalid_transfers.append(transfer)
+                        
+        return invalid_transfers if len(invalid_transfers) > 0 else None
