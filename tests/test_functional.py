@@ -85,3 +85,20 @@ def test_apartment_has_any_bills():
 
     has_bills = manager.has_any_bills('apart-polanka', 2025, 3)
     assert has_bills == False
+
+def test_tenant_on_black_list_rejected():
+    manager = Manager(Parameters())
+    manager.blacklist = [{
+        "name":"Jan Nowak", "reason":"zalegał z czynszem 2 miesiące"}]
+    is_valid, reason = manager.check_tenant_on_black_list("Jan Nowak")
+    assert is_valid is False
+    assert reason == "zalegał z czynszem 2 miesiące"
+    
+    
+def test_tenant_on_black_list_accepted():
+    manager = Manager(Parameters())
+    manager.blacklist = [{
+        "name":"Jan Nowak", "reason":"zalegał z czynszem 2 miesiące"}]
+    is_valid, reason = manager.check_tenant_on_black_list("Kamil Ślimak")
+    assert is_valid is True
+    assert reason == "zalegał z czynszem 2 miesiące"
