@@ -144,3 +144,6 @@ class Manager:
                     invalid_transfers.append(transfer)
                         
         return invalid_transfers if len(invalid_transfers) > 0 else None
+    def get_invalid_transfers(self) -> list[Transfer]:
+        return[transfer for transfer in self.transfers if transfer.amount_pln < self.min_transfer_amount or transfer.amount_pln > self.max_transfer_amount]
+    
