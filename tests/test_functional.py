@@ -85,3 +85,42 @@ def test_apartment_has_any_bills():
 
     has_bills = manager.has_any_bills('apart-polanka', 2025, 3)
     assert has_bills == False
+
+# Testy dt sprawdzania przelewow
+
+def test_no_unknown_tenants_on_clean_data():
+    manager = Manager(Parameters())
+    assert manager.get_transfers_with_unknown_tenant() == None
+ 
+ 
+def test_detects_transfer_with_unknown_tenant():
+    manager = Manager(Parameters())
+    manager.transfers.append(Transfer(
+        tenant='tenant-0', 
+        date='2025-01-10',
+        settlement_year=2025, 
+        settlement_month=1, 
+        amount_pln=500.0, 
+        type='rent'
+    ))
+    assert len(manager.get_transfers_with_unknown_tenant()) == 1
+ 
+ 
+def test_no_transfers_outside_agreement_on_clean_data():
+    manager = Manager(Parameters())
+    assert manager.get_transfers_outside_agreement() == None
+ 
+ 
+def test_detects_transfer_outside_agreement():
+    manager = Manager(Parameters())
+    manager.tenants['tenant-1'].date_agreement_to = '2024-12-31'
+    manager.transfers.append(Transfer(
+        tenant='tenant-1', 
+        date='2025-12-31',
+        settlement_year=2025, 
+        settlement_month=12, 
+        amount_pln=2500.0, 
+        type='rent'
+    ))
+    assert len(manager.get_transfers_outside_agreement()) == 1
+ 
