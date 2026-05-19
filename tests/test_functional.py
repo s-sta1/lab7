@@ -85,3 +85,13 @@ def test_apartment_has_any_bills():
 
     has_bills = manager.has_any_bills('apart-polanka', 2025, 3)
     assert has_bills == False
+    
+def test_if_blacklisted():
+    manager = Manager(Parameters())
+    
+    is_blacklisted = manager.see_if_blacklisted('Adam Testowy')
+    assert is_blacklisted == True
+    
+    is_blacklisted = manager.see_if_blacklisted('Anna Testowa')
+    assert is_blacklisted == False
+    

@@ -1,0 +1,11 @@
+{
+    "blacklisted-1": {
+        "name": "Adam Testowy",
+        "reason": "zadluzenie"
+    },
+
+    "blacklisted-2": {
+        "name": "Bartek Testowy",
+        "reason": "wandalizm"
+    }
+}
