@@ -124,3 +124,19 @@ def test_detects_transfer_outside_agreement():
     ))
     assert len(manager.get_transfers_outside_agreement()) == 1
  
+def test_tenant_on_black_list_rejected():
+    manager = Manager(Parameters())
+    manager.blacklist = [{
+        "name":"Jan Nowak", "reason":"zalegał z czynszem 2 miesiące"}]
+    is_valid, reason = manager.check_tenant_on_black_list("Jan Nowak")
+    assert is_valid is False
+    assert reason == "zalegał z czynszem 2 miesiące"
+    
+    
+def test_tenant_on_black_list_accepted():
+    manager = Manager(Parameters())
+    manager.blacklist = [{
+        "name":"Jan Nowak", "reason":"zalegał z czynszem 2 miesiące"}]
+    is_valid, reason = manager.check_tenant_on_black_list("Kamil Ślimak")
+    assert is_valid is True
+    assert reason == "zalegał z czynszem 2 miesiące"
