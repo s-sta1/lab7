@@ -113,3 +113,6 @@ class Manager:
             raise ValueError("Apartment key does not exist")
         return any([bill for bill in self.bills if bill.apartment == apartment_key and bill.settlement_year == year and bill.settlement_month == month])
     
+    def get_invalid_transfers(self) -> list[Transfer]:
+        return[transfer for transfer in self.transfers if transfer.amount_pln < self.min_transfer_amount or transfer.amount_pln > self.max_transfer_amount]
+    
