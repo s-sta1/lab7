@@ -1,4 +1,4 @@
-from src.models import Bill, Parameters, TenantSettlement, ApartmentSettlement, Transfer
+from src.models import Bill, Parameters, TenantSettlement, ApartmentSettlement, Transfer, BlacklistEntry
 from src.manager import Manager
 
 
@@ -126,8 +126,9 @@ def test_detects_transfer_outside_agreement():
  
 def test_tenant_on_black_list_rejected():
     manager = Manager(Parameters())
-    manager.blacklist = [{
-        "name":"Jan Nowak", "reason":"zalegał z czynszem 2 miesiące"}]
+    manager.blacklist = [
+        BlacklistEntry(name="Jan Nowak", reason="zalegał z czynszem 2 miesiące")
+    ]
     is_valid, reason = manager.check_tenant_on_black_list("Jan Nowak")
     assert is_valid is False
     assert reason == "zalegał z czynszem 2 miesiące"
@@ -135,8 +136,9 @@ def test_tenant_on_black_list_rejected():
     
 def test_tenant_on_black_list_accepted():
     manager = Manager(Parameters())
-    manager.blacklist = [{
-        "name":"Jan Nowak", "reason":"zalegał z czynszem 2 miesiące"}]
+    manager.blacklist = [
+        BlacklistEntry(name="Jan Nowak", reason="zalegał z czynszem 2 miesiące")
+    ]
     is_valid, reason = manager.check_tenant_on_black_list("Kamil Ślimak")
     assert is_valid is True
-    assert reason == "zalegał z czynszem 2 miesiące"
+    assert reason is None 
